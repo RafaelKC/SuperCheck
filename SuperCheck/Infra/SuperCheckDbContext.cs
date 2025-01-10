@@ -18,6 +18,9 @@ public class SuperCheckDbContext: DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<Caminhao> Caminhoes { get; set; }
     
+    public DbSet<SeederManager> SeederManagers { get; set; }
+    public DbSet<UserCredential> UserCredentials { get; set; }
+    
      protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Checklist>(entity =>
@@ -131,6 +134,20 @@ public class SuperCheckDbContext: DbContext
 
             entity.HasIndex(e => e.Placa)
                 .IsUnique();
+        });
+
+        modelBuilder.Entity<SeederManager>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+        });
+
+        modelBuilder.Entity<UserCredential>(entity =>
+        {
+            entity.HasKey(e => e.UserId);
+
+            entity.HasOne(e => e.Usuario)
+                .WithMany()
+                .HasForeignKey(e => e.UserId);
         });
     }
 }

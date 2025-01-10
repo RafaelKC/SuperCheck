@@ -12,7 +12,7 @@ builder.Services.AddDbContext<SuperCheckDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly("SuperCheck")
     ));
-builder.AddSuperCheckSingletons();
+builder.AddSuperCheckTransients();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -44,4 +44,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<SuperCheckDbContext>();
     dbContext.Database.Migrate();
 }
+app.UseSeeders();
+
+
 app.Run();
