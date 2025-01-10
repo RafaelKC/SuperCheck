@@ -12,7 +12,7 @@ using SuperCheck.Infra;
 namespace SuperCheck.Migrations
 {
     [DbContext(typeof(SuperCheckDbContext))]
-    [Migration("20250110024506_StartingDB")]
+    [Migration("20250110155430_StartingDB")]
     partial class StartingDB
     {
         /// <inheritdoc />
@@ -218,7 +218,7 @@ namespace SuperCheck.Migrations
                     b.HasOne("SuperCheck.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SuperCheck.Entities.Usuario", "Executor")
@@ -262,7 +262,7 @@ namespace SuperCheck.Migrations
                     b.HasOne("SuperCheck.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Categoria");

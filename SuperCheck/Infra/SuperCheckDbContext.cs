@@ -27,7 +27,7 @@ public class SuperCheckDbContext: DbContext
             entity.HasOne(e => e.Categoria)
                 .WithMany()
                 .HasForeignKey(e => e.CategoriaId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(e => e.Template)
                 .WithMany()
@@ -85,7 +85,7 @@ public class SuperCheckDbContext: DbContext
             entity.HasOne(e => e.Categoria)
                 .WithMany()
                 .HasForeignKey(e => e.CategoriaId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.Property(e => e.Nome)
                 .IsRequired()

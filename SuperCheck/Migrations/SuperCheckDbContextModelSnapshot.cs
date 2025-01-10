@@ -215,7 +215,7 @@ namespace SuperCheck.Migrations
                     b.HasOne("SuperCheck.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SuperCheck.Entities.Usuario", "Executor")
@@ -259,7 +259,7 @@ namespace SuperCheck.Migrations
                     b.HasOne("SuperCheck.Entities.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Categoria");
