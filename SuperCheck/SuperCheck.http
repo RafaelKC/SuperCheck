@@ -1,0 +1,6 @@
+@SuperCheck_HostAddress = http://localhost:5277
+
+GET {{SuperCheck_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
