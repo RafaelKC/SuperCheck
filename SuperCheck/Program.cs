@@ -1,15 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using SuperCheck.Extensions;
 using SuperCheck.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<SuperCheckDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly("SuperCheck")
     ));
+builder.AddSuperCheckSingletons();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -26,6 +29,8 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.MapOpenApi();
 }
 

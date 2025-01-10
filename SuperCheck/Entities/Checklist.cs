@@ -5,7 +5,7 @@ namespace SuperCheck.Entities;
 public class Checklist
 {
     public Guid Id { get; set; }
-    public Guid CategoriaId { get; set; }
+    public Guid? CategoriaId { get; set; }
     public Guid? TemplateId { get; set; }
     public Guid CaminhaoId { get; set; }
     public Guid MotoristaId { get; set; }
