@@ -10,8 +10,10 @@ public class Checklist
     public Guid CaminhaoId { get; set; }
     public Guid MotoristaId { get; set; }
     public Guid? ExecutorId { get; set; }
+    public Guid? SupervisorId { get; set; }
     public DateTime Data { get; set; }
-    public string Observacao { get; set; }
+    public string? Observacao { get; set; }
+    public string? ObservacaoReprovacao { get; set; }
     public ChecklistStatus Status { get; set; } = ChecklistStatus.Aberta;
     
     public virtual Categoria Categoria { get; set; }
@@ -19,5 +21,6 @@ public class Checklist
     public virtual Caminhao Caminhao { get; set; }
     public virtual Usuario Motorista { get; set; }
     public virtual Usuario Executor { get; set; }
+    public virtual Usuario Supervisor { get; set; }
     public virtual ICollection<ChecklistItem> Items { get; set; }
 }

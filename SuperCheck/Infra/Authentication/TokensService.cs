@@ -41,15 +41,4 @@ public class TokensService: ITokensService
 
         return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
     }
-
-    private string GetRoleDescription(UsuarioRole role)
-    {
-        return role switch
-        {
-            UsuarioRole.Motorista => "Motorista",
-            UsuarioRole.Executor => "Executor",
-            UsuarioRole.Supervisor => "Supervisor",
-            _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
-        };
-    }
 }

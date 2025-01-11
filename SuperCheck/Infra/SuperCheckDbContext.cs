@@ -51,6 +51,11 @@ public class SuperCheckDbContext: DbContext
                 .WithMany()
                 .HasForeignKey(e => e.ExecutorId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            entity.HasOne(e => e.Supervisor)
+                .WithMany()
+                .HasForeignKey(e => e.SupervisorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             entity.Property(e => e.Observacao)
                 .HasMaxLength(500);

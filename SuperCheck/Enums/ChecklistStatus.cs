@@ -6,5 +6,6 @@ public enum ChecklistStatus
     EmProgresso = 1,
     Completa = 2,
     NaoAprovada = 3,
-    Cancelada = 4
+    Cancelada = 4,
+    Aprovada = 5
 }
