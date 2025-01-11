@@ -104,7 +104,7 @@ public class ChecklistItemService: IChecklistItemService
         if (checklist.Status != ChecklistStatus.EmProgresso)
             throw new InvalidOperationException("Checklist deve estar em progresso para avaliar item.");
         if(checklist.ExecutorId != executorId)
-            throw new InvalidOperationException("Apenas o executor do checklist pode avaliar um item..");
+            throw new InvalidOperationException("Apenas o executor do checklist pode avaliar um item.");
         
         item.Status = status;
         await _context.SaveChangesAsync();

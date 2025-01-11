@@ -133,15 +133,18 @@ public class ChecklistService : IChecklistService
         if (checklist == null) return;
         
         _context.Checklists.Remove(checklist);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<bool> IniciarExecucao(Guid id, Guid executorId)
     {
-        var checklist = await _context.Checklists.FirstOrDefaultAsync(c => c.Id == id);
+        var checklist = await _context.Checklists.Include(c => c.Items).FirstOrDefaultAsync(c => c.Id == id);
         if (checklist == null) return false;
 
         if (checklist.Status != ChecklistStatus.Aberta)
             throw new InvalidOperationException("Apenas checklists abertos podem ser iniciados.");
+        if (!checklist.Items.Any())
+            throw new InvalidOperationException("A checklist deve ter pelo menos um item.");
 
         checklist.ExecutorId = executorId;
         checklist.Status = ChecklistStatus.EmProgresso;

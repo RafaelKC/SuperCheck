@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SuperCheck.Dtos;
 using SuperCheck.Dtos.Checklists;
@@ -38,7 +37,7 @@ public class ChecklistController: ControllerBase
     public async Task<ActionResult<Checklist>> Create([FromBody] CreateChecklistDto checklistDto)
     {
         var checklist = await _checklistService.Create(checklistDto);
-        return CreatedAtAction(nameof(GetById), new { id = checklist.Id }, checklist);
+        return CreatedAtAction(nameof(GetById), new { checklistId = checklist.Id }, checklist);
     }
     
     [HttpPut("{checklistId:guid}")]
@@ -58,7 +57,7 @@ public class ChecklistController: ControllerBase
     
     [HttpDelete("{checklistId:guid}")]
     [Authorize(Roles = "Supervisor")]
-    public async Task<ActionResult> Update([FromRoute] Guid checklistId)
+    public async Task<ActionResult> Delete([FromRoute] Guid checklistId)
     {
         await _checklistService.Delete(checklistId);
         return Ok();
@@ -100,7 +99,7 @@ public class ChecklistController: ControllerBase
     {
         try
         {
-            var update = await _checklistService.Finalizar(checklistId, User.GetUserId().Value);
+            var update = await _checklistService.Aprovar(checklistId, User.GetUserId().Value);
             return update ? Ok() : NotFound();
         }
         catch (InvalidOperationException e)

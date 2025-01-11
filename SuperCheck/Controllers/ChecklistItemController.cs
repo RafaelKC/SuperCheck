@@ -45,12 +45,12 @@ public class ChecklistItemController : ControllerBase
 
     [HttpPatch("{itemId:guid}")]
     [Authorize(Roles = "Supervisor,Executor")]
-    public async Task<ActionResult> AvaliarItem([FromRoute] Guid itemId, [FromBody] ItemStatus status)
+    public async Task<ActionResult> AvaliarItem([FromRoute] Guid itemId, [FromBody] AvaliarChecklistItemDto input)
     {
         try
         {
             var userId = User.GetUserId();
-            var avaliado = await _checklistItemService.AvaliarItem(itemId, userId.Value, status);
+            var avaliado = await _checklistItemService.AvaliarItem(itemId, userId.Value, input.Status);
             return avaliado ? Ok() : NotFound();
         }
         catch (InvalidOperationException e)
