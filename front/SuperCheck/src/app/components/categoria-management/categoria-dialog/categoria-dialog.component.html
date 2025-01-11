@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{data ? 'Editar' : 'Nova'}} Categoria</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    <mat-form-field>
+      <mat-label>Descrição</mat-label>
+      <input matInput formControlName="descricao" placeholder="Digite a descrição da categoria">
+      <mat-error *ngIf="form.get('descricao')?.errors?.['required']">
+        Descrição é obrigatório
+      </mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="dialogRef.close()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+      {{data ? 'Atualizar' : 'Criar'}}
+    </button>
+  </mat-dialog-actions>
+</form>

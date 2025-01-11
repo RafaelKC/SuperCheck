@@ -15,7 +15,7 @@ export class UsuarioService {
     @Inject(API_URL) private apiUrl: string
   ) {}
 
-  publicgetList(input: GetUsuarioListInput): Observable<PagedResultDto<Usuario>> {
+  public getList(input: GetUsuarioListInput): Observable<PagedResultDto<Usuario>> {
     let params = new HttpParams()
       .set('skipCount', input.skipCount.toString())
       .set('pageSize', input.pageSize.toString());
