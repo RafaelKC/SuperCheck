@@ -14,7 +14,8 @@ public class CategoriaSeeder: ISeeder
 
     public void Seed()
     {
-        if (_context.SeederManagers.Any(c => c.CategoriasSeeded)) return;
+        var seederManager = _context.SeederManagers.First();
+        if (seederManager.CategoriasSeeded) return;
         
         _context.Categorias.AddRange([
             new Categoria { Descricao = "Entrada caminhão" },
@@ -22,6 +23,7 @@ public class CategoriaSeeder: ISeeder
             new Categoria { Descricao = "Carregamento caminhão" },
             new Categoria { Descricao = "Descarregamento caminhão" }
         ]);
+        seederManager.CategoriasSeeded = true;
         _context.SaveChanges();
     }
 }

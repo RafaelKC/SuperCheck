@@ -1,21 +1,24 @@
-﻿using SuperCheck.Seeders;
+﻿using SuperCheck.Infra.Authentication;
+using SuperCheck.Seeders;
 using SuperCheck.Services;
 
 namespace SuperCheck.Extensions;
 
 public static class AppBuilderExtensions
 {
-    public static void AddSuperCheckTransients(this WebApplicationBuilder builder)
+    public static IServiceCollection AddSuperCheckTransients(this IServiceCollection services)
     {
-        builder.Services.AddTransient<ICategoriaService, CategoriaService>();
+        services.AddTransient<ICategoriaService, CategoriaService>();
         
         var seederTypes = typeof(Program).Assembly.GetTypes()
             .Where(t => typeof(ISeeder).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
 
         foreach (var seederType in seederTypes)
         {
-            builder.Services.AddTransient(seederType);
+            services.AddTransient(seederType);
         }
+        
+        return services;
     }
 
     public static void UseSeeders(this WebApplication app)
@@ -25,7 +28,8 @@ public static class AppBuilderExtensions
             var seeders = new List<Type>
             {
                 typeof(SeederManagerSeeder),
-                typeof(CategoriaSeeder)
+                typeof(CategoriaSeeder),
+                typeof(UserAdminSeeder)
             };
             
             var serviceProvider = scope.ServiceProvider;

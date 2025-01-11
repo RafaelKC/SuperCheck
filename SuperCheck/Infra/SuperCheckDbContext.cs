@@ -144,10 +144,13 @@ public class SuperCheckDbContext: DbContext
         modelBuilder.Entity<UserCredential>(entity =>
         {
             entity.HasKey(e => e.UserId);
-
+            
+            entity.HasIndex(e => e.Login)
+                .IsUnique();
             entity.HasOne(e => e.Usuario)
-                .WithMany()
-                .HasForeignKey(e => e.UserId);
+                .WithOne(e => e.Credential)
+                .HasForeignKey<UserCredential>(e => e.UserId)
+                .HasPrincipalKey<Usuario>(e => e.Id);
         });
     }
 }

@@ -209,13 +209,16 @@ namespace SuperCheck.Migrations
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
 
                     b.ToTable("UserCredentials");
                 });
@@ -310,8 +313,8 @@ namespace SuperCheck.Migrations
             modelBuilder.Entity("SuperCheck.Entities.UserCredential", b =>
                 {
                     b.HasOne("SuperCheck.Entities.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Credential")
+                        .HasForeignKey("SuperCheck.Entities.UserCredential", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -326,6 +329,12 @@ namespace SuperCheck.Migrations
             modelBuilder.Entity("SuperCheck.Entities.ChecklistTemplate", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("SuperCheck.Entities.Usuario", b =>
+                {
+                    b.Navigation("Credential")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
