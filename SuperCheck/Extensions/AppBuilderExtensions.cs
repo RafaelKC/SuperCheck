@@ -11,6 +11,8 @@ public static class AppBuilderExtensions
         services.AddTransient<ICategoriaService, CategoriaService>();
         services.AddTransient<IUsuarioService, UsuarioService>();
         services.AddTransient<ICaminhaoService, CaminhaoService>();
+        services.AddTransient<IChecklistTemplateService, ChecklistTemplateService>();
+        services.AddTransient<ITemplateItemService, TemplateItemService>();
         
         var seederTypes = typeof(Program).Assembly.GetTypes()
             .Where(t => typeof(ISeeder).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);

@@ -12,7 +12,7 @@ public class Checklist
     public Guid? ExecutorId { get; set; }
     public DateTime Data { get; set; }
     public string Observacao { get; set; }
-    public ChecklistStatus Status { get; set; }
+    public ChecklistStatus Status { get; set; } = ChecklistStatus.Aberta;
     
     public virtual Categoria Categoria { get; set; }
     public virtual ChecklistTemplate Template { get; set; }

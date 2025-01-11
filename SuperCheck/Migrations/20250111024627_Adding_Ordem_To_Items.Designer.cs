@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuperCheck.Infra;
 
@@ -11,9 +12,11 @@ using SuperCheck.Infra;
 namespace SuperCheck.Migrations
 {
     [DbContext(typeof(SuperCheckDbContext))]
-    partial class SuperCheckDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250111024627_Adding_Ordem_To_Items")]
+    partial class Adding_Ordem_To_Items
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +127,7 @@ namespace SuperCheck.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Observacao")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -190,6 +194,7 @@ namespace SuperCheck.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Observacao")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 

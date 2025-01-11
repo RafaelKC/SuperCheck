@@ -7,6 +7,7 @@ public class ChecklistItem
     public Guid Id { get; set; }
     public Guid ChecklistId { get; set; }
     public string Nome { get; set; }
-    public string Observacao { get; set; }
-    public ItemStatus Status { get; set; }
+    public int Order { get; set; }
+    public string? Observacao { get; set; }
+    public ItemStatus Status { get; set; } = ItemStatus.NaoAvaliada;
 }
