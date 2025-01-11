@@ -44,9 +44,17 @@ export class AuthService {
         this.router.navigate(['/login']);
     }
 
-    public isAuthenticated(): boolean {
-        return this.tokenService.isAuthenticated();
-    }
+  public isAuthenticated(): boolean {
+    return !!this.tokenService.getToken();
+  }
+
+  public isSupervisor(): boolean {
+    const token = this.tokenService.getToken();
+    if (!token) return false;
+    
+    const decodedToken = this.tokenService.decodeToken(token);
+    return decodedToken?.role === 'Supervisor';
+  }
 
     public getCurrentUser(): User | null {
         return this.currentUserSubject.value;

@@ -52,4 +52,12 @@ export class TokenService {
     private get isBrowser(): boolean {
         return isPlatformBrowser(this.platformId);
     }
+
+    public decodeToken(token: string): any {
+        try {
+            return jwtDecode(token) as any;
+        } catch {
+            return null;
+        }
+    }
 }

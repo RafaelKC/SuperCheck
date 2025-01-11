@@ -28,6 +28,7 @@ public class ChecklistTemplateService: IChecklistTemplateService
     public async Task<PagedOutput<ChecklistTemplate>> GetList(GetChecklistTeplateListInput input)
     {
         return await _context.Templates
+            .Include(ct => ct.Categoria)
             .WhereIf(!string.IsNullOrWhiteSpace(input.Filter), checklistTemplate => checklistTemplate.Nome.ToLower().Contains(input.Filter.ToLower()))
             .WhereIf(input.CategoriasIds != null && input.CategoriasIds.Any(), c => c.CategoriaId.HasValue && input.CategoriasIds.Contains(c.CategoriaId.Value))
             .OrderBy(checklistTemplate => checklistTemplate.Nome)

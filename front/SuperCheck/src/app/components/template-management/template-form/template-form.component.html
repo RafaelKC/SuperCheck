@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <h2>{{ isEdit ? 'Editar' : 'Novo' }} Template</h2>
+
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Nome</mat-label>
+        <input matInput formControlName="nome" required>
+        <mat-error *ngIf="form.get('nome')?.hasError('required')">
+          Nome é obrigatório
+        </mat-error>
+      </mat-form-field>
+
+      <app-categoria-selector formControlName="categoriaId"></app-categoria-selector>
+    </div>
+
+    <div class="actions">
+      <button mat-button type="button" [routerLink]="['/templates']">Cancelar</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+        {{ isEdit ? 'Atualizar' : 'Criar' }}
+      </button>
+    </div>
+  </form>
+</div>

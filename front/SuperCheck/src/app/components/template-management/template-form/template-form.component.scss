@@ -1,0 +1,38 @@
+.container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 24px;
+
+      mat-form-field {
+        flex: 1;
+      }
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  }
+}

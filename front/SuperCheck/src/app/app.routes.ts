@@ -21,5 +21,20 @@ export const routes: Routes = [
     path: 'categorias',
     loadComponent: () => import('./components/categoria-management/categoria-management.component').then(c => c.CategoriaManagementComponent),
     canActivate: [authGuard, supervisorGuard]
+  },
+  {
+    path: 'templates',
+    loadComponent: () => import('./components/template-management/template-management.component').then(m => m.TemplateManagementComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'templates/create',
+    loadComponent: () => import('./components/template-management/template-form/template-form.component').then(m => m.TemplateFormComponent),
+    canActivate: [authGuard, supervisorGuard]
+  },
+  {
+    path: 'templates/:id/edit',
+    loadComponent: () => import('./components/template-management/template-form/template-form.component').then(m => m.TemplateFormComponent),
+    canActivate: [authGuard, supervisorGuard]
   }
 ];
