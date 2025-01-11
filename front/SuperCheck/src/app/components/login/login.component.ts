@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
     ]
 })
 export class LoginComponent {
-    loginForm: FormGroup;
+    public loginForm: FormGroup;
 
     constructor(
         private fb: FormBuilder,
@@ -39,7 +39,7 @@ export class LoginComponent {
         });
     }
 
-    onSubmit(): void {
+    public onSubmit(): void {
         if (this.loginForm.valid) {
             this.authService.login(this.loginForm.value).subscribe({
                 next: () => {

@@ -1,0 +1,59 @@
+.user-management-container {
+  padding: 20px;
+
+  .actions {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  .filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+
+    mat-form-field {
+      min-width: 200px;
+      flex: 1;
+    }
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+
+    &.loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    .mat-mdc-row:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+
+  mat-paginator {
+    margin-top: 20px;
+  }
+}

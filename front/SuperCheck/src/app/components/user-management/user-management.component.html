@@ -1,0 +1,62 @@
+<div class="user-management-container">
+  <div class="actions">
+    <button mat-raised-button color="primary" [routerLink]="['create']">
+      Adicionar Usuário
+    </button>
+    <button mat-raised-button color="primary" [routerLink]="['create-motorista']">
+      Adicionar Motorista
+    </button>
+  </div>
+
+  <h2>User Management</h2>
+
+  <div class="filters">
+    <mat-form-field>
+      <mat-label>Filtrar por nome</mat-label>
+      <input matInput [ngModel]="filterValue" (ngModelChange)="onFilterChange($event)" placeholder="Digite um nome...">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Filtrar por Cargo</mat-label>
+      <mat-select [(ngModel)]="selectedRoles" multiple (selectionChange)="onRoleFilterChange()">
+        <mat-option *ngFor="let role of roles" [value]="role.value">
+          {{role.label}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="loading-spinner" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div class="table-container" [class.loading]="isLoading">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let user">{{user.nome}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Cargo</th>
+        <td mat-cell *matCellDef="let user">{{getRoleName(user.role)}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="no-data" *ngIf="!isLoading && dataSource.length === 0">
+      Nenhum usuário encontrado
+    </div>
+  </div>
+
+  <mat-paginator
+    [length]="totalItems"
+    [pageSize]="pageSize"
+    [pageIndex]="currentPage"
+    [pageSizeOptions]="[5, 10, 15, 25, 50]"
+    (page)="onPageChange($event)"
+    aria-label="Select page">
+  </mat-paginator>
+</div>

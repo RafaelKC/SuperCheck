@@ -11,6 +11,28 @@
     }
 </mat-toolbar>
 
-<div class="content">
-    <router-outlet></router-outlet>
-</div>
+@if (authService.currentUser$ | async; as user) {
+    <mat-sidenav-container>
+        <mat-sidenav mode="side" position="start" opened class="dark-sidenav">
+            <div class="nav-items">
+                <a mat-icon-button routerLink="/" matTooltip="Home">
+                    <mat-icon>home</mat-icon>
+                </a>
+                @if (user.role === 'Supervisor') {
+                    <a mat-icon-button routerLink="/users" matTooltip="User Management">
+                        <mat-icon>manage_accounts</mat-icon>
+                    </a>
+                }
+            </div>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <div class="content">
+                <router-outlet></router-outlet>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+} @else {
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+}
