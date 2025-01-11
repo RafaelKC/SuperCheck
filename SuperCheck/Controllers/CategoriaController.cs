@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SuperCheck.Dtos;
 using SuperCheck.Dtos.Categorias;
 using SuperCheck.Entities;
@@ -7,6 +8,7 @@ using SuperCheck.Services;
 namespace SuperCheck.Controllers;
 
 [Route("categorias")]
+[Authorize]
 public class CategoriaController: ControllerBase
 {
     private readonly ICategoriaService _categoriaService;
@@ -31,6 +33,7 @@ public class CategoriaController: ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Supervisor")]
     public async Task<ActionResult<Categoria>> Create([FromBody] CreateCategoriaDTO createDto)
     {
         var categoria = await _categoriaService.Create(createDto);
@@ -38,6 +41,7 @@ public class CategoriaController: ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Supervisor")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateCategoriaDTO updateDto)
     {
         var updated = await _categoriaService.Update(id, updateDto);
@@ -45,6 +49,7 @@ public class CategoriaController: ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Supervisor")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         await _categoriaService.Delete(id);

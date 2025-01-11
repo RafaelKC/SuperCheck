@@ -148,7 +148,7 @@ public class SuperCheckDbContext: DbContext
             entity.HasIndex(e => e.Login)
                 .IsUnique();
             entity.HasOne(e => e.Usuario)
-                .WithOne(e => e.Credential)
+                .WithOne()
                 .HasForeignKey<UserCredential>(e => e.UserId)
                 .HasPrincipalKey<Usuario>(e => e.Id);
         });

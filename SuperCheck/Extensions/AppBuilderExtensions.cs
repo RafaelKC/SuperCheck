@@ -9,6 +9,7 @@ public static class AppBuilderExtensions
     public static IServiceCollection AddSuperCheckTransients(this IServiceCollection services)
     {
         services.AddTransient<ICategoriaService, CategoriaService>();
+        services.AddTransient<IUsuarioService, UsuarioService>();
         
         var seederTypes = typeof(Program).Assembly.GetTypes()
             .Where(t => typeof(ISeeder).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
