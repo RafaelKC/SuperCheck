@@ -20,6 +20,7 @@ public class AuthController: ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<LoginOutput>> Login([FromBody] LoginInput input)
     {
-        return await _loginService.Login(input);
+        var result = await _loginService.Login(input);
+        return result.Success ? Ok(result) : BadRequest();
     }
 }
