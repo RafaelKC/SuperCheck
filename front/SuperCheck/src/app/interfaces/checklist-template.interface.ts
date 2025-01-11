@@ -7,6 +7,12 @@ export interface ChecklistTemplate {
     categoriaId: string;
 }
 
+export interface CreateUpdateChecklistTemplate {
+    id?: string;
+    nome: string;
+    categoriaId: string;
+}
+
 export interface GetChecklistTemplateListInput extends FilteredAndPagedGetListInput {
 }
 

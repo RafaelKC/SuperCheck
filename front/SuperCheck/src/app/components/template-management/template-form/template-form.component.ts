@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ChecklistTemplate } from '../../../interfaces/checklist-template.interface';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChecklistTemplate, CreateUpdateChecklistTemplate } from '../../../interfaces/checklist-template.interface';
 import { ChecklistTemplateService } from '../../../services/checklist-template.service';
 import { CategoriaSelectorComponent } from '../../shared/categoria-selector/categoria-selector.component';
+import { TemplateItemService, TemplateItem } from '../../../services/template-item.service';
 
 @Component({
   selector: 'app-template-form',
@@ -20,7 +24,10 @@ import { CategoriaSelectorComponent } from '../../shared/categoria-selector/cate
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatTableModule,
+    MatIconModule,
     RouterModule,
+    DragDropModule,
     CategoriaSelectorComponent
   ],
   templateUrl: './template-form.component.html',
@@ -30,17 +37,27 @@ export class TemplateFormComponent implements OnInit {
   public form: FormGroup;
   public isLoading = false;
   public isEdit = false;
+  public displayedColumns = ['drag', 'nome', 'observacao', 'acoes'];
+  public dataSource: FormGroup[] = [];
+  public hasChanges = false;
   private templateId: string | null = null;
+  private originalItems: TemplateItem[] = [];
 
   constructor(
     private fb: FormBuilder,
     private templateService: ChecklistTemplateService,
+    private templateItemService: TemplateItemService,
     private router: Router,
     private route: ActivatedRoute
   ) {
     this.form = this.fb.group({
       nome: ['', [Validators.required]],
-      categoriaId: ['', [Validators.required]]
+      categoriaId: ['', [Validators.required]],
+      items: this.fb.array([])
+    });
+
+    this.form.valueChanges.subscribe(() => {
+      this.checkChanges();
     });
   }
 
@@ -52,19 +69,34 @@ export class TemplateFormComponent implements OnInit {
     }
   }
 
+  get items() {
+    return this.form.get('items') as FormArray;
+  }
+
+  get isFormValid(): boolean {
+    return this.form.valid && 
+           this.hasChanges && 
+           this.items.controls.every(control => control.get('nome')?.valid);
+  }
+
+  public getItemControl(index: number, controlName: string): FormControl {
+    return (this.items.at(index) as FormGroup).get(controlName) as FormControl;
+  }
+
   public onSubmit() {
-    if (this.form.valid) {
+    if (this.form.valid && this.items.controls.every(control => control.get('nome')?.valid)) {
       this.isLoading = true;
-      const template: ChecklistTemplate = {
-        ...this.form.value,
+      const { nome, categoriaId } = this.form.value;
+      const template: CreateUpdateChecklistTemplate = {
+        nome,
+        categoriaId,
         id: this.templateId || undefined
       };
 
-      if (this.isEdit) {
-        this.templateService.update(this.templateId!, template).subscribe({
+      if (this.isEdit && this.templateId) {
+        this.templateService.update(this.templateId, template).subscribe({
           next: () => {
-            this.isLoading = false;
-            this.router.navigate(['/templates']);
+            this.saveItems(this.templateId);
           },
           error: (err: unknown) => {
             console.error('Error saving template:', err);
@@ -73,9 +105,10 @@ export class TemplateFormComponent implements OnInit {
         });
       } else {
         this.templateService.create(template).subscribe({
-          next: (result) => {
-            this.isLoading = false;
-            this.router.navigate(['/templates']);
+          next: (result: ChecklistTemplate) => {
+            this.templateId = result.id;
+            this.isEdit = true;
+            this.saveItems(result.id);
           },
           error: (err: unknown) => {
             console.error('Error saving template:', err);
@@ -86,17 +119,112 @@ export class TemplateFormComponent implements OnInit {
     }
   }
 
+  public trackByFn(index: number): number {
+    return index;
+  }
+
+  public addItem() {
+    this.items.push(this.fb.group({
+      id: [null],
+      nome: ['', Validators.required],
+      observacao: ['']
+    }));
+    this.updateDataSource();
+    this.checkChanges();
+  }
+
+  private updateDataSource() {
+    this.dataSource = [...this.items.controls] as FormGroup[];
+  }
+
+  public removeItem(index: number) {
+    this.items.removeAt(index);
+    this.updateDataSource();
+    this.checkChanges();
+  }
+
+  public onDrop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.items.controls, event.previousIndex, event.currentIndex);
+    this.items.updateValueAndValidity();
+    this.updateDataSource();
+    this.checkChanges();
+  }
+
+  private saveItems(templateId: string | null) {
+    if (!templateId) return;
+    const items = this.items.controls.map((control, index) => ({
+      ...control.value,
+      templateId,
+      order: index,
+      id: control.value.id ?? undefined
+    }));
+
+    this.templateItemService.batchUpdate(templateId, { items }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.hasChanges = false;
+        this.originalItems = [...items];
+      },
+      error: (err: unknown) => {
+        console.error('Error saving items:', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private checkChanges() {
+    if (!this.form.dirty && this.items.length === this.originalItems.length) {
+      const currentItems = this.items.getRawValue();
+      this.hasChanges = currentItems.some((item, index) => {
+        const original = this.originalItems[index];
+        return !original || 
+               item.nome !== original.nome || 
+               item.observacao !== original.observacao;
+      });
+    } else {
+      this.hasChanges = true;
+    }
+  }
+
   private loadTemplate() {
-    if (!this.templateId) return;
+    if (!this.templateId) {
+      return;
+    }
 
     this.isLoading = true;
+    
     this.templateService.getById(this.templateId).subscribe({
       next: (template) => {
         this.form.patchValue({
           nome: template.nome,
           categoriaId: template.categoriaId
         });
-        this.isLoading = false;
+        
+        this.templateItemService.getList(this.templateId!, {
+          filter: '',
+          pageSize: 100,
+          skipCount: 0
+        }).subscribe({
+          next: (result) => {
+            const sortedItems = result.items.sort((a, b) => a.order - b.order);
+            this.originalItems = [...sortedItems];
+            
+            sortedItems.forEach(item => {
+              this.items.push(this.fb.group({
+                id: [item.id],
+                nome: [item.nome, Validators.required],
+                observacao: [item.observacao]
+              }));
+            });
+            
+            this.updateDataSource();
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Error loading items:', error);
+            this.isLoading = false;
+          }
+        });
       },
       error: (error) => {
         console.error('Error loading template:', error);

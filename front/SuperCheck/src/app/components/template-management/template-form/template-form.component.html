@@ -4,7 +4,15 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
-    <h2>{{ isEdit ? 'Editar' : 'Novo' }} Template</h2>
+    <div class="header">
+      <h2>{{ isEdit ? 'Editar' : 'Novo' }} Template</h2>
+      <div class="actions">
+        <button mat-button type="button" [routerLink]="['/templates']">Cancelar</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!isFormValid">
+          Salvar
+        </button>
+      </div>
+    </div>
 
     <div class="form-row">
       <mat-form-field>
@@ -18,11 +26,57 @@
       <app-categoria-selector formControlName="categoriaId"></app-categoria-selector>
     </div>
 
-    <div class="actions">
-      <button mat-button type="button" [routerLink]="['/templates']">Cancelar</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
-        {{ isEdit ? 'Atualizar' : 'Criar' }}
-      </button>
+    <div class="items-section" formArrayName="items">
+      <h3>Itens do Template</h3>
+      
+      <table mat-table [dataSource]="dataSource" [trackBy]="trackByFn" cdkDropList (cdkDropListDropped)="onDrop($event)" class="mat-elevation-z1">
+        <ng-container matColumnDef="drag">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let item; let i = index">
+            <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell *matHeaderCellDef>Nome</th>
+          <td mat-cell *matCellDef="let item; let i = index">
+            <mat-form-field>
+              <input matInput [formControl]="getItemControl(i, 'nome')" required>
+              <mat-error *ngIf="getItemControl(i, 'nome')?.hasError('required')">
+                Nome é obrigatório
+              </mat-error>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="observacao">
+          <th mat-header-cell *matHeaderCellDef>Observação</th>
+          <td mat-cell *matCellDef="let item; let i = index">
+            <mat-form-field>
+              <input matInput [formControl]="getItemControl(i, 'observacao')">
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acoes">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let item; let i = index">
+            <button mat-icon-button color="warn" type="button" (click)="removeItem(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row" class="item-row"></tr>
+      </table>
+
+      <div class="add-item">
+        <button mat-button type="button" (click)="addItem()">
+          <mat-icon>add</mat-icon>
+          Adicionar Item
+        </button>
+      </div>
     </div>
   </form>
 </div>

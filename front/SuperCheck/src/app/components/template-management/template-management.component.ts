@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
-import { ChecklistTemplate, GetChecklistTemplateListInput } from '../../interfaces/checklist-template.interface';
-import { ChecklistTemplateService } from '../../services/checklist-template.service';
-import { AuthService } from '../../services/auth.service';
-import { CategoriaService } from '../../services/categoria.service';
 import { Categoria } from '../../interfaces/categoria.interface';
+import { ChecklistTemplate, GetChecklistTemplateListInput } from '../../interfaces/checklist-template.interface';
+import { AuthService } from '../../services/auth.service';
+import { ChecklistTemplateService } from '../../services/checklist-template.service';
 
 @Component({
   selector: 'app-template-management',
@@ -40,7 +39,6 @@ export class TemplateManagementComponent implements OnInit {
   public totalItems = 0;
   public isLoading = false;
   public isSupervisor = false;
-  private categoriaDescricoes = new Map<string, string>();
 
   public filterValue = '';
   public pageSize = 15;
@@ -50,8 +48,7 @@ export class TemplateManagementComponent implements OnInit {
 
   constructor(
     private templateService: ChecklistTemplateService,
-    private authService: AuthService,
-    private categoriaService: CategoriaService
+    private authService: AuthService
   ) {
     this.isSupervisor = this.authService.isSupervisor();
   }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_URL } from '../tokens/api.token';
-import { ChecklistTemplate, ChecklistTemplatePagedResult, GetChecklistTemplateListInput } from '../interfaces/checklist-template.interface';
+import { ChecklistTemplate, ChecklistTemplatePagedResult, CreateUpdateChecklistTemplate, GetChecklistTemplateListInput } from '../interfaces/checklist-template.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +20,12 @@ export class ChecklistTemplateService {
     return this.http.get<ChecklistTemplate>(`${this.baseUrl}/${id}`);
   }
 
-  public create(template: ChecklistTemplate): Observable<ChecklistTemplate> {
+  public create(template: CreateUpdateChecklistTemplate): Observable<ChecklistTemplate> {
     console.log(template)
     return this.http.post<ChecklistTemplate>(this.baseUrl, template);
   }
 
-  public update(id: string, template: ChecklistTemplate): Observable<void> {
+  public update(id: string, template: CreateUpdateChecklistTemplate): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${id}`, template);
   }
 
