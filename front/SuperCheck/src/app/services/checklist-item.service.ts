@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { API_URL } from '../tokens/api.token';
-import { ChecklistItem, CreateUpdateChecklistItem, BatchUpdateChecklistItemsRequest } from '../interfaces/checklist-item.interface';
-import { PagedResultDto } from '../interfaces/paged-result-dto';
-import { FilteredAndPagedGetListInput } from '../interfaces/filtered-and-paged-get-list-input';
-import { ItemStatus } from '../interfaces/item-status.enum';
+import {HttpClient} from '@angular/common/http';
+import {Inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {API_URL} from '../tokens/api.token';
+import {BatchUpdateChecklistItemsRequest, ChecklistItem} from '../interfaces/checklist-item.interface';
+import {PagedResultDto} from '../interfaces/paged-result-dto';
+import {FilteredAndPagedGetListInput} from '../interfaces/filtered-and-paged-get-list-input';
+import {ItemStatus} from '../interfaces/item-status.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,7 @@ export class ChecklistItemService {
     return this.http.post<void>(`${this.baseUrl}/${checklistId}/items`, request);
   }
 
-  avaliarItem(itemId: string, status: ItemStatus): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}/items/${itemId}`, { status });
+  avaliarItem(itemId: string, checklistId: string, status: ItemStatus): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${checklistId}/items/${itemId}`, { status });
   }
 }

@@ -1,30 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { RejectDialogComponent } from './reject-dialog/reject-dialog.component';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CategoriaSelectorComponent } from '../../shared/categoria-selector/categoria-selector.component';
-import { ChecklistService } from '../../../services/checklist.service';
-import { ChecklistItemService } from '../../../services/checklist-item.service';
-import { MotoristaService, Motorista } from '../../../services/motorista.service';
-import { CaminhaoService, Caminhao } from '../../../services/caminhao.service';
-import { AuthService } from '../../../services/auth.service';
-import { Observable, forkJoin, map } from 'rxjs';
-import { Checklist } from '../../../interfaces/checklist.interface';
-import { ChecklistItem, CreateUpdateChecklistItem, BatchUpdateChecklistItemsRequest } from '../../../interfaces/checklist-item.interface';
-import { ChecklistStatus } from '../../../interfaces/checklist-status.enum';
-import { ItemStatus } from '../../../interfaces/item-status.enum';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTableModule} from '@angular/material/table';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {RejectDialogComponent} from './reject-dialog/reject-dialog.component';
+import {ActivatedRoute, RouterModule} from '@angular/router';
+import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CategoriaSelectorComponent} from '../../shared/categoria-selector/categoria-selector.component';
+import {ChecklistService} from '../../../services/checklist.service';
+import {ChecklistItemService} from '../../../services/checklist-item.service';
+import {Caminhao, CaminhaoService} from '../../../services/caminhao.service';
+import {AuthService} from '../../../services/auth.service';
+import {map, Observable} from 'rxjs';
+import {Checklist} from '../../../interfaces/checklist.interface';
+import {
+  BatchUpdateChecklistItemsRequest,
+  CreateUpdateChecklistItem
+} from '../../../interfaces/checklist-item.interface';
+import {ItemStatus} from '../../../interfaces/item-status.enum';
+import {GetUsuarioListInput, Usuario, UsuarioRole} from '../../../interfaces/usuario.interface';
+import {UsuarioService} from '../../../services/usuario.service';
+import {FilteredAndPagedGetListInput} from '../../../interfaces/filtered-and-paged-get-list-input';
+import {ChecklistStatus} from '../../../interfaces/checklist-status.enum';
 
 @Component({
   selector: 'app-checklist-edit',
@@ -53,10 +58,10 @@ export class ChecklistEditComponent implements OnInit {
   public form: FormGroup;
   public isLoading = false;
   public checklist: Checklist | null = null;
-  public motoristas$: Observable<Motorista[]>;
+  public motoristas$: Observable<Usuario[]>;
   public caminhoes$: Observable<Caminhao[]>;
   public displayedColumns = ['drag', 'nome', 'status', 'observacao', 'acoes'];
-  public itemStatuses = Object.values(ItemStatus);
+  public itemStatuses = [ItemStatus.NaoAvaliada, ItemStatus.Conforme, ItemStatus.NaoConforme, ItemStatus.NaoAplica];
   public isSupervisor = false;
   public isExecutor = false;
 
@@ -64,10 +69,9 @@ export class ChecklistEditComponent implements OnInit {
     private fb: FormBuilder,
     private checklistService: ChecklistService,
     private checklistItemService: ChecklistItemService,
-    private motoristaService: MotoristaService,
     private caminhaoService: CaminhaoService,
     private authService: AuthService,
-    private router: Router,
+    private usuarioService: UsuarioService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {
@@ -80,8 +84,11 @@ export class ChecklistEditComponent implements OnInit {
       items: this.fb.array([])
     });
 
-    this.motoristas$ = this.motoristaService.getList();
-    this.caminhoes$ = this.caminhaoService.getList();
+    this.motoristas$ = this.usuarioService.getList({
+      pageSize: 100,
+      roles: [UsuarioRole.Motorista]
+    } as GetUsuarioListInput).pipe(map(u => u.items));
+    this.caminhoes$ = this.caminhaoService.getList({pageSize: 100} as FilteredAndPagedGetListInput).pipe(map(u => u.items));
   }
 
   ngOnInit() {
@@ -90,6 +97,10 @@ export class ChecklistEditComponent implements OnInit {
     if (checklistId) {
       this.loadChecklist(checklistId);
     }
+  }
+
+  public get itensValidos(): boolean {
+    return this.items.controls.every(c => c.get('status')?.value != ItemStatus.NaoAvaliada);
   }
 
   get items() {
@@ -132,18 +143,16 @@ export class ChecklistEditComponent implements OnInit {
   public onStatusChange(itemId: string, status: ItemStatus) {
     if (!this.checklist || !this.isExecutor) return;
 
-    this.isLoading = true;
-    this.checklistItemService.avaliarItem(itemId, status).subscribe({
+    this.checklistItemService.avaliarItem(itemId, this.checklist.id, status).subscribe({
       next: () => {
         const item = this.items.controls.find(control => control.get('id')?.value === itemId);
         if (item) {
-          item.patchValue({ status });
+          item.patchValue({status});
         }
         this.isLoading = false;
       },
       error: (err: unknown) => {
         console.error('Error updating item status:', err);
-        this.isLoading = false;
       }
     });
   }
@@ -192,7 +201,7 @@ export class ChecklistEditComponent implements OnInit {
 
   public reprovar() {
     if (!this.checklist) return;
-    
+
     const dialogRef = this.dialog.open(RejectDialogComponent);
     dialogRef.afterClosed().subscribe(observacao => {
       if (!observacao) return;
@@ -238,6 +247,57 @@ export class ChecklistEditComponent implements OnInit {
     });
   }
 
+  public getStatusDescricao(status: ItemStatus): string {
+    switch (status) {
+      case ItemStatus.NaoAvaliada:
+        return 'Não avaliada';
+      case ItemStatus.Conforme:
+        return 'Conforme';
+      case ItemStatus.NaoConforme:
+        return 'Não conforme';
+      case ItemStatus.NaoAplica:
+        return 'Não aplica';
+    }
+  }
+
+  public getStatusClass(status: ChecklistStatus): string {
+    switch (status) {
+      case ChecklistStatus.Aberta:
+        return 'status-aberta';
+      case ChecklistStatus.EmProgresso:
+        return 'status-em-progresso';
+      case ChecklistStatus.Completa:
+        return 'status-completa';
+      case ChecklistStatus.Aprovada:
+        return 'status-aprovada';
+      case ChecklistStatus.NaoAprovada:
+        return 'status-nao-aprovada';
+      case ChecklistStatus.Cancelada:
+        return 'status-cancelada';
+      default:
+        return '';
+    }
+  }
+
+  public getStatusText(status: ChecklistStatus): string {
+    switch (status) {
+      case ChecklistStatus.Aberta:
+        return 'Aberta';
+      case ChecklistStatus.EmProgresso:
+        return 'Em Progresso';
+      case ChecklistStatus.Completa:
+        return 'Completa';
+      case ChecklistStatus.Aprovada:
+        return 'Aprovada';
+      case ChecklistStatus.NaoAprovada:
+        return 'Não Aprovada';
+      case ChecklistStatus.Cancelada:
+        return 'Cancelada';
+      default:
+        return '';
+    }
+  }
+
   private loadChecklist(id: string) {
     this.isLoading = true;
     this.checklistService.getById(id).subscribe({
@@ -263,10 +323,22 @@ export class ChecklistEditComponent implements OnInit {
             id: [item.id],
             nome: [item.nome, Validators.required],
             observacao: [item.observacao],
-            status: [item.status]
+            status: [{value: item.status, disabled: checklist.status != ChecklistStatus.EmProgresso}]
           }));
         });
 
+
+        if (
+          this.checklist.status === ChecklistStatus.Aprovada
+          || this.checklist.status === ChecklistStatus.NaoAprovada
+          || this.checklist.status === ChecklistStatus.Cancelada
+          || this.checklist.status === ChecklistStatus.Completa
+          || (this.checklist.status === ChecklistStatus.EmProgresso && !this.isExecutor)
+        ) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
         this.isLoading = false;
       },
       error: (error) => {
@@ -285,7 +357,7 @@ export class ChecklistEditComponent implements OnInit {
       order: index
     }));
 
-    const request: BatchUpdateChecklistItemsRequest = { items };
+    const request: BatchUpdateChecklistItemsRequest = {items};
     this.checklistItemService.batchUpdate(this.checklist.id, request).subscribe({
       next: () => {
         this.loadChecklist(this.checklist!.id);
@@ -296,4 +368,5 @@ export class ChecklistEditComponent implements OnInit {
       }
     });
   }
+
 }

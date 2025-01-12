@@ -17,8 +17,8 @@ export class UsuarioService {
 
   public getList(input: GetUsuarioListInput): Observable<PagedResultDto<Usuario>> {
     let params = new HttpParams()
-      .set('skipCount', input.skipCount.toString())
-      .set('pageSize', input.pageSize.toString());
+      .set('skipCount', input.skipCount?.toString())
+      .set('pageSize', input.pageSize?.toString());
 
     if (input.filter) {
       params = params.set('filter', input.filter);

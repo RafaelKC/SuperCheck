@@ -14,8 +14,10 @@ import { ChecklistService } from '../../../services/checklist.service';
 import { ChecklistTemplateService } from '../../../services/checklist-template.service';
 import { Observable, map } from 'rxjs';
 import { ChecklistTemplate, GetChecklistTemplateListInput } from '../../../interfaces/checklist-template.interface';
-import { MotoristaService, Motorista } from '../../../services/motorista.service';
 import { CaminhaoService, Caminhao } from '../../../services/caminhao.service';
+import { UsuarioService } from '../../../services/usuario.service';
+import { GetUsuarioListInput, Usuario, UsuarioRole } from '../../../interfaces/usuario.interface';
+import {FilteredAndPagedGetListInput} from '../../../interfaces/filtered-and-paged-get-list-input';
 
 @Component({
   selector: 'app-checklist-form',
@@ -40,7 +42,7 @@ export class ChecklistFormComponent implements OnInit {
   public form: FormGroup;
   public isLoading = false;
   public templates$: Observable<ChecklistTemplate[]>;
-  public motoristas$: Observable<Motorista[]>;
+  public motoristas$: Observable<Usuario[]>;
   public caminhoes$: Observable<Caminhao[]>;
 
   constructor(
@@ -49,12 +51,12 @@ export class ChecklistFormComponent implements OnInit {
     private templateService: ChecklistTemplateService,
     private router: Router,
     private route: ActivatedRoute,
-    private motoristaService: MotoristaService,
+    private usarioServoce: UsuarioService,
     private caminhaoService: CaminhaoService
   ) {
     this.form = this.fb.group({
       templateId: [null],
-      categoriaId: [null, [Validators.required]],
+      categoriaId: [null],
       caminhaoId: [null, [Validators.required]],
       motoristaId: [null, [Validators.required]],
       data: [new Date(), [Validators.required]],
@@ -71,8 +73,8 @@ export class ChecklistFormComponent implements OnInit {
       map(result => result.items)
     );
 
-    this.motoristas$ = this.motoristaService.getList();
-    this.caminhoes$ = this.caminhaoService.getList();
+    this.motoristas$ = this.usarioServoce.getList({pageSize: 100, roles: [UsuarioRole.Motorista] } as GetUsuarioListInput).pipe(map(u => u.items));
+    this.caminhoes$ = this.caminhaoService.getList({ pageSize: 100 } as FilteredAndPagedGetListInput).pipe(map(u => u.items));
   }
 
   ngOnInit() {}

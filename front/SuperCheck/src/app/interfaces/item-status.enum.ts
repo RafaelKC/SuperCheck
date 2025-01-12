@@ -1,5 +1,6 @@
 export enum ItemStatus {
-    NaoAvaliada = 'NaoAvaliada',
-    Conforme = 'Conforme',
-    NaoConforme = 'NaoConforme'
+  NaoAvaliada = 0,
+  Conforme = 1,
+  NaoConforme = 2,
+  NaoAplica = 3
 }

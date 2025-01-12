@@ -43,9 +43,9 @@ export class LoginComponent {
         if (this.loginForm.valid) {
             this.authService.login(this.loginForm.value).subscribe({
                 next: () => {
-                    this.router.navigate(['/']);
+                    this.router.navigate(['/checklists']);
                 },
-                error: (error) => {
+                error: () => {
                     this.snackBar.open('Falha no Login', 'Fechar', {
                         duration: 3000
                     });

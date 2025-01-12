@@ -37,7 +37,7 @@
         <mat-label>Caminhão</mat-label>
         <mat-select formControlName="caminhaoId" required>
           <mat-option *ngFor="let caminhao of caminhoes$ | async" [value]="caminhao.id">
-            {{ caminhao.placa }}
+            {{ caminhao.placa }} - {{ caminhao.descricao }}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="form.get('caminhaoId')?.hasError('required')">

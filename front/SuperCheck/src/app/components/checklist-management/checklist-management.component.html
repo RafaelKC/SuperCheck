@@ -6,7 +6,7 @@
   <div class="content" *ngIf="!isLoading">
     <div class="header">
       <h2>Checklists</h2>
-      <button mat-raised-button color="primary" [routerLink]="['create']" *ngIf="isSupervisor">
+      <button mat-raised-button color="primary" [routerLink]="['create']">
         Novo Checklist
       </button>
     </div>
@@ -30,7 +30,7 @@
 
       <div class="status-filters">
         <mat-button-toggle-group multiple>
-          <mat-button-toggle *ngFor="let status of allStatuses" 
+          <mat-button-toggle *ngFor="let status of allStatuses"
                             [checked]="selectedStatuses.includes(status)"
                             (change)="onStatusToggle(status)"
                             [ngClass]="getStatusClass(status)">
