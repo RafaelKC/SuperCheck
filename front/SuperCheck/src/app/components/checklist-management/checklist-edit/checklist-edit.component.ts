@@ -370,3 +370,7 @@ export class ChecklistEditComponent implements OnInit {
   }
 
 }
+
+//TODO Estilizar melhor o drag N drop
+// Fazer tela de caminhoes
+// fazer drag n drop funcionar

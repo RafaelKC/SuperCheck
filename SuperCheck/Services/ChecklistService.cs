@@ -186,7 +186,7 @@ public class ChecklistService : IChecklistService
         if (checklist.Status != ChecklistStatus.Completa)
             throw new InvalidOperationException("Apenas checklists completos podem ser aprovados.");
 
-        checklist.Status = ChecklistStatus.Completa;
+        checklist.Status = ChecklistStatus.Aprovada;
         checklist.SupervisorId = supervisorId;
         await _context.SaveChangesAsync();
         return true;
