@@ -136,8 +136,12 @@ export class ChecklistEditComponent implements OnInit {
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {
+    if (this.checklist?.status !== 0) return;
+    
     moveItemInArray(this.items.controls, event.previousIndex, event.currentIndex);
     this.items.updateValueAndValidity();
+    this.form.markAsDirty();
+    this.saveItems();
   }
 
   public onStatusChange(itemId: string, status: ItemStatus) {
@@ -313,7 +317,6 @@ export class ChecklistEditComponent implements OnInit {
           observacao: checklist.observacao
         });
 
-        // Clear and rebuild items array
         while (this.items.length) {
           this.items.removeAt(0);
         }
@@ -370,7 +373,3 @@ export class ChecklistEditComponent implements OnInit {
   }
 
 }
-
-//TODO Estilizar melhor o drag N drop
-// Fazer tela de caminhoes
-// fazer drag n drop funcionar

@@ -101,7 +101,10 @@
       <div class="items-section" formArrayName="items">
         <h3>Itens do Checklist</h3>
 
-        <table mat-table [dataSource]="items.controls" cdkDropList (cdkDropListDropped)="onDrop($event)"
+        <table mat-table [dataSource]="items.controls" 
+               cdkDropList 
+               (cdkDropListDropped)="onDrop($event)"
+               [cdkDropListDisabled]="checklist.status !== 0"
                class="mat-elevation-z1">
           <ng-container matColumnDef="drag">
             <th mat-header-cell *matHeaderCellDef></th>
@@ -157,7 +160,11 @@
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row" [cdkDragDisabled]="checklist.status != 0"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+              cdkDrag 
+              [cdkDragData]="row" 
+              [cdkDragDisabled]="checklist.status !== 0"
+              [class.cdk-drag-disabled]="checklist.status !== 0"></tr>
         </table>
 
         <div class="add-item" *ngIf="checklist.status === 0">

@@ -53,20 +53,50 @@
         .drag-handle {
           cursor: move;
           color: #666;
+          margin: 8px;
+          &:hover {
+            color: #333;
+          }
         }
 
         mat-form-field {
           width: 100%;
+          padding: 4px 8px;
+          
+          .mat-mdc-form-field-infix {
+            min-height: 36px;
+          }
+          
+          input.mat-mdc-input-element {
+            padding: 4px 0;
+          }
         }
 
         .mat-column-drag {
           width: 48px;
           padding: 0;
+          text-align: center;
         }
 
         .mat-column-acoes {
           width: 48px;
           padding: 0;
+          text-align: center;
+        }
+
+        .mat-mdc-row {
+          min-height: 56px;
+          
+          &:hover {
+            background: rgba(0, 0, 0, 0.04);
+          }
+          
+          &.cdk-drag-preview {
+            background: white;
+            box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                      0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                      0 3px 14px 2px rgba(0, 0, 0, 0.12);
+          }
         }
       }
 
@@ -88,8 +118,10 @@
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-  0 8px 10px 1px rgba(0, 0, 0, 0.14),
-  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+             0 8px 10px 1px rgba(0, 0, 0, 0.14),
+             0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  background: white;
+  padding: 12px;
 }
 
 .cdk-drag-placeholder {
@@ -100,8 +132,15 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.cdk-drop-list-dragging .mat-row:not(.cdk-drag-placeholder) {
+.cdk-drop-list-dragging .mat-mdc-row:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  background: white;
+}
+
+.mat-mdc-table {
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .status-badge {
