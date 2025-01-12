@@ -17,8 +17,8 @@ export class CaminhaoService {
   getList(input: FilteredAndPagedGetListInput): Observable<PagedResultDto<Caminhao>> {
     const params = {
       filter: input.filter || '',
-      pageSize: input.pageSize.toString(),
-      skipCount: input.skipCount.toString()
+      pageSize: input.pageSize?.toString(),
+      skipCount: input.skipCount?.toString()
     };
 
     return this.http.get<PagedResultDto<Caminhao>>(this.baseUrl, { params });
