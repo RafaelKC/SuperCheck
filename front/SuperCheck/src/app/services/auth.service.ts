@@ -49,11 +49,15 @@ export class AuthService {
   }
 
   public isSupervisor(): boolean {
+    return this.hasRole('Supervisor');
+  }
+
+  public hasRole(role: string): boolean {
     const token = this.tokenService.getToken();
     if (!token) return false;
     
     const decodedToken = this.tokenService.decodeToken(token);
-    return decodedToken?.role === 'Supervisor';
+    return decodedToken?.role === role;
   }
 
     public getCurrentUser(): User | null {

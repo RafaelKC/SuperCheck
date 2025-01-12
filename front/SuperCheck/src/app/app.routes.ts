@@ -4,11 +4,6 @@ import { supervisorGuard } from './guards/supervisor.guard';
 
 export const routes: Routes = [
   {
-    path: '',
-    loadComponent: () => import('./components/home/home.component').then(c => c.HomeComponent),
-    canActivate: [authGuard]
-  },
-  {
     path: 'login',
     loadComponent: () => import('./components/login/login.component').then(c => c.LoginComponent)
   },
@@ -36,5 +31,24 @@ export const routes: Routes = [
     path: 'templates/:id/edit',
     loadComponent: () => import('./components/template-management/template-form/template-form.component').then(m => m.TemplateFormComponent),
     canActivate: [authGuard, supervisorGuard]
+  },
+  {
+    path: 'checklists',
+    loadComponent: () => import('./components/checklist-management/checklist-management.component').then(m => m.ChecklistManagementComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'checklists/create',
+    loadComponent: () => import('./components/checklist-management/checklist-form/checklist-form.component').then(m => m.ChecklistFormComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'checklists/:id/edit',
+    loadComponent: () => import('./components/checklist-management/checklist-edit/checklist-edit.component').then(m => m.ChecklistEditComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: '*',
+    redirectTo: 'checklists'
   }
 ];

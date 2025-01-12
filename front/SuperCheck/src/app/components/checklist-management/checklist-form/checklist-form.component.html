@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+    <h2>Novo Checklist</h2>
+
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Template</mat-label>
+        <mat-select formControlName="templateId">
+          <mat-option [value]="null">Nenhum</mat-option>
+          <mat-option *ngFor="let template of templates$ | async" [value]="template.id">
+            {{ template.nome }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <app-categoria-selector formControlName="categoriaId"></app-categoria-selector>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Motorista</mat-label>
+        <mat-select formControlName="motoristaId" required>
+          <mat-option *ngFor="let motorista of motoristas$ | async" [value]="motorista.id">
+            {{ motorista.nome }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('motoristaId')?.hasError('required')">
+          Motorista é obrigatório
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Caminhão</mat-label>
+        <mat-select formControlName="caminhaoId" required>
+          <mat-option *ngFor="let caminhao of caminhoes$ | async" [value]="caminhao.id">
+            {{ caminhao.placa }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('caminhaoId')?.hasError('required')">
+          Caminhão é obrigatório
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field>
+        <mat-label>Data</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="data" required>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="form.get('data')?.hasError('required')">
+          Data é obrigatória
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Observação</mat-label>
+        <textarea matInput formControlName="observacao" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <button mat-button type="button" [routerLink]="['../']">Cancelar</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+        Criar
+      </button>
+    </div>
+  </form>
+</div>

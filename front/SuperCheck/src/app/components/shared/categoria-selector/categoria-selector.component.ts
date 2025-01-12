@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,12 +26,13 @@ import { Observable } from 'rxjs';
   ],
   template: `
     <mat-form-field>
-      <mat-label>Categoria</mat-label>
+      <mat-label>Categoria{{ multiple ? 's' : '' }}</mat-label>
       <mat-select 
         [value]="value"
         (selectionChange)="onChange($event.value)"
         (blur)="onTouched()"
-        [disabled]="disabled">
+        [disabled]="disabled"
+        [multiple]="multiple">
         <mat-option *ngFor="let cat of categorias$ | async" [value]="cat.id">
           {{cat.descricao}}
         </mat-option>
@@ -45,7 +46,8 @@ import { Observable } from 'rxjs';
   `]
 })
 export class CategoriaSelectorComponent implements OnInit, ControlValueAccessor {
-  public value: string | null = null;
+  @Input() multiple = false;
+  public value: string | string[] | null = null;
   public disabled = false;
   public onChange: any = () => {};
   public onTouched: any = () => {};
@@ -58,7 +60,7 @@ export class CategoriaSelectorComponent implements OnInit, ControlValueAccessor 
   public ngOnInit() {}
 
   // ControlValueAccessor implementation
-  public writeValue(value: string): void {
+  public writeValue(value: string | string[]): void {
     this.value = value;
   }
 

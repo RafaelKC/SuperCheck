@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -28,7 +29,8 @@ import { TemplateItemService, TemplateItem } from '../../../services/template-it
     MatIconModule,
     RouterModule,
     DragDropModule,
-    CategoriaSelectorComponent
+    CategoriaSelectorComponent,
+    MatSnackBarModule
   ],
   templateUrl: './template-form.component.html',
   styleUrl: './template-form.component.scss'
@@ -48,7 +50,8 @@ export class TemplateFormComponent implements OnInit {
     private templateService: ChecklistTemplateService,
     private templateItemService: TemplateItemService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       nome: ['', [Validators.required]],
@@ -96,7 +99,7 @@ export class TemplateFormComponent implements OnInit {
       if (this.isEdit && this.templateId) {
         this.templateService.update(this.templateId, template).subscribe({
           next: () => {
-            this.saveItems(this.templateId);
+            this.saveItems(this.templateId, 'Template atualizado com sucesso!');
           },
           error: (err: unknown) => {
             console.error('Error saving template:', err);
@@ -108,7 +111,7 @@ export class TemplateFormComponent implements OnInit {
           next: (result: ChecklistTemplate) => {
             this.templateId = result.id;
             this.isEdit = true;
-            this.saveItems(result.id);
+            this.saveItems(result.id, 'Template criado com sucesso!');
           },
           error: (err: unknown) => {
             console.error('Error saving template:', err);
@@ -150,7 +153,7 @@ export class TemplateFormComponent implements OnInit {
     this.checkChanges();
   }
 
-  private saveItems(templateId: string | null) {
+  private saveItems(templateId: string | null, successMessage: string) {
     if (!templateId) return;
     const items = this.items.controls.map((control, index) => ({
       ...control.value,
@@ -164,6 +167,10 @@ export class TemplateFormComponent implements OnInit {
         this.isLoading = false;
         this.hasChanges = false;
         this.originalItems = [...items];
+        this.snackBar.open(successMessage, 'Fechar', {
+          duration: 3000,
+          horizontalPosition: 'end'
+        });
       },
       error: (err: unknown) => {
         console.error('Error saving items:', err);

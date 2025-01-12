@@ -6,12 +6,9 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
     <div class="header">
       <h2>{{ isEdit ? 'Editar' : 'Novo' }} Template</h2>
-      <div class="actions">
-        <button mat-button type="button" [routerLink]="['/templates']">Cancelar</button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="!isFormValid">
-          Salvar
-        </button>
-      </div>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!isFormValid">
+        Salvar
+      </button>
     </div>
 
     <div class="form-row">

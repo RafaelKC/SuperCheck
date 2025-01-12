@@ -1,0 +1,160 @@
+<div class="container">
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="content" *ngIf="!isLoading && checklist">
+    <div class="header">
+      <h2>Editar Checklist</h2>
+      <div class="actions">
+        <button mat-button type="button" [routerLink]="['../../']">Voltar</button>
+        <button mat-raised-button color="primary" (click)="iniciarExecucao()" 
+                *ngIf="checklist.status === 0">
+          Iniciar Execução
+        </button>
+        <button mat-raised-button color="primary" (click)="finalizar()" 
+                *ngIf="checklist.status === 1 && isExecutor">
+          Finalizar
+        </button>
+        <button mat-raised-button color="primary" (click)="aprovar()" 
+                *ngIf="checklist.status === 2 && isSupervisor">
+          Aprovar
+        </button>
+        <button mat-raised-button color="warn" (click)="reprovar()" 
+                *ngIf="checklist.status === 2 && isSupervisor">
+          Reprovar
+        </button>
+        <button mat-raised-button color="warn" (click)="cancelar()" 
+                *ngIf="isSupervisor">
+          Cancelar
+        </button>
+        <button mat-raised-button color="primary" (click)="reabrir()" 
+                *ngIf="(checklist.status === 4 || checklist.status === 5 || checklist.status === 1) && isSupervisor">
+          Reabrir
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <app-categoria-selector formControlName="categoriaId"></app-categoria-selector>
+
+        <mat-form-field>
+          <mat-label>Motorista</mat-label>
+          <mat-select formControlName="motoristaId" required>
+            <mat-option *ngFor="let motorista of motoristas$ | async" [value]="motorista.id">
+              {{ motorista.nome }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('motoristaId')?.hasError('required')">
+            Motorista é obrigatório
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Caminhão</mat-label>
+          <mat-select formControlName="caminhaoId" required>
+            <mat-option *ngFor="let caminhao of caminhoes$ | async" [value]="caminhao.id">
+              {{ caminhao.placa }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('caminhaoId')?.hasError('required')">
+            Caminhão é obrigatório
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field>
+          <mat-label>Data</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="data" required>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="form.get('data')?.hasError('required')">
+            Data é obrigatória
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Observação</mat-label>
+          <textarea matInput formControlName="observacao" rows="3"></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="items-section" formArrayName="items">
+        <h3>Itens do Checklist</h3>
+        
+        <table mat-table [dataSource]="items.controls" cdkDropList (cdkDropListDropped)="onDrop($event)" class="mat-elevation-z1">
+          <ng-container matColumnDef="drag">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let item; let i = index" cdkDrag>
+              <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let item; let i = index">
+              <mat-form-field>
+                <input matInput [formControl]="item.get('nome')" required>
+                <mat-error *ngIf="item.get('nome')?.hasError('required')">
+                  Nome é obrigatório
+                </mat-error>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let item; let i = index">
+              <mat-form-field>
+                <mat-select [formControl]="item.get('status')" 
+                           [disabled]="!isExecutor || checklist.status !== 1"
+                           (selectionChange)="onStatusChange(item.get('id')?.value, $event.value)">
+                  <mat-option *ngFor="let status of itemStatuses" [value]="status">
+                    {{ status }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="observacao">
+            <th mat-header-cell *matHeaderCellDef>Observação</th>
+            <td mat-cell *matCellDef="let item; let i = index">
+              <mat-form-field>
+                <input matInput [formControl]="item.get('observacao')">
+              </mat-form-field>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let item; let i = index">
+              <button mat-icon-button color="warn" type="button" (click)="removeItem(i)"
+                      *ngIf="checklist.status === 0">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row"></tr>
+        </table>
+
+        <div class="add-item" *ngIf="checklist.status === 0">
+          <button mat-button type="button" (click)="addItem()">
+            <mat-icon>add</mat-icon>
+            Adicionar Item
+          </button>
+        </div>
+      </div>
+
+      <div class="actions" *ngIf="checklist.status === 0">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">
+          Salvar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

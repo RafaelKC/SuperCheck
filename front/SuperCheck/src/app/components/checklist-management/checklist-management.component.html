@@ -1,0 +1,101 @@
+<div class="container">
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="content" *ngIf="!isLoading">
+    <div class="header">
+      <h2>Checklists</h2>
+      <button mat-raised-button color="primary" [routerLink]="['create']" *ngIf="isSupervisor">
+        Novo Checklist
+      </button>
+    </div>
+
+    <div class="filters">
+      <form [formGroup]="filterForm">
+        <mat-form-field>
+          <mat-label>Filtrar por observação</mat-label>
+          <input matInput formControlName="filter" placeholder="Digite para filtrar">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Data</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="data">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <app-categoria-selector formControlName="categoriasIds" [multiple]="true"></app-categoria-selector>
+      </form>
+
+      <div class="status-filters">
+        <mat-button-toggle-group multiple>
+          <mat-button-toggle *ngFor="let status of allStatuses" 
+                            [checked]="selectedStatuses.includes(status)"
+                            (change)="onStatusToggle(status)"
+                            [ngClass]="getStatusClass(status)">
+            {{ getStatusText(status) }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let checklist">
+          <span class="status-badge" [ngClass]="getStatusClass(checklist.status)">
+            {{ getStatusText(checklist.status) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="observacao">
+        <th mat-header-cell *matHeaderCellDef>Observação</th>
+        <td mat-cell *matCellDef="let checklist">{{ checklist.observacao }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="data">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let checklist">{{ checklist.data | date:'dd/MM/yyyy' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="motorista">
+        <th mat-header-cell *matHeaderCellDef>Motorista</th>
+        <td mat-cell *matCellDef="let checklist">{{ checklist.motorista?.nome }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="caminhao">
+        <th mat-header-cell *matHeaderCellDef>Caminhão</th>
+        <td mat-cell *matCellDef="let checklist">{{ checklist.caminhao?.placa }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="executor">
+        <th mat-header-cell *matHeaderCellDef>Executor</th>
+        <td mat-cell *matCellDef="let checklist">{{ checklist.executor?.nome }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="acoes">
+        <th mat-header-cell *matHeaderCellDef>Ações</th>
+        <td mat-cell *matCellDef="let checklist">
+          <button mat-icon-button [routerLink]="[checklist.id, 'edit']">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteChecklist(checklist.id)" *ngIf="isSupervisor">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 15, 20]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</div>

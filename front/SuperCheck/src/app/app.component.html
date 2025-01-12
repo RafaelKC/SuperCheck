@@ -15,13 +15,13 @@
     <mat-sidenav-container>
         <mat-sidenav mode="side" position="start" opened class="dark-sidenav">
             <div class="nav-items">
-                <a mat-icon-button routerLink="/" matTooltip="Home">
-                    <mat-icon>home</mat-icon>
-                </a>
-                <a mat-icon-button routerLink="/templates" matTooltip="Templates">
-                    <mat-icon>assignment</mat-icon>
+                <a mat-icon-button routerLink="/checklists" matTooltip="Checklists">
+                    <mat-icon>checklist</mat-icon>
                 </a>
                 @if (user.role === 'Supervisor') {
+                    <a mat-icon-button routerLink="/templates" matTooltip="Templates">
+                        <mat-icon>assignment</mat-icon>
+                    </a>
                     <a mat-icon-button routerLink="/usuarios" matTooltip="User Management">
                         <mat-icon>manage_accounts</mat-icon>
                     </a>

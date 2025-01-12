@@ -43,6 +43,12 @@ public class ChecklistService : IChecklistService
             : new DateTime(input.Data.Value.Year, input.Data.Value.Month, input.Data.Value.Day, 23, 59, 59);
 
         return await _context.Checklists
+            .Include(c => c.Items)
+            .Include(c => c.Categoria)
+            .Include(c => c.Executor)
+            .Include(c => c.Motorista)
+            .Include(c => c.Caminhao)
+            .Include(c => c.Supervisor)
             .WhereIf(!string.IsNullOrWhiteSpace(input.Filter),
                 checklistTemplate => checklistTemplate.Observacao.ToLower().Contains(input.Filter.ToLower()))
             .WhereIf(input.CategoriasIds != null && input.CategoriasIds.Any(),
