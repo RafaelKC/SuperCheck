@@ -101,7 +101,7 @@
       <div class="items-section" formArrayName="items">
         <h3>Itens do Checklist</h3>
 
-        <table mat-table [dataSource]="items.controls" 
+        <table mat-table [dataSource]="dataSource" 
                cdkDropList 
                (cdkDropListDropped)="onDrop($event)"
                [cdkDropListDisabled]="checklist.status !== 0"

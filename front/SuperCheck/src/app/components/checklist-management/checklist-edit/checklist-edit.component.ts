@@ -65,6 +65,7 @@ export class ChecklistEditComponent implements OnInit {
   public itemStatuses = [ItemStatus.NaoAvaliada, ItemStatus.Conforme, ItemStatus.NaoConforme, ItemStatus.NaoAplica];
   public isSupervisor = false;
   public isExecutor = false;
+  public dataSource: FormGroup[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -130,19 +131,25 @@ export class ChecklistEditComponent implements OnInit {
       observacao: [''],
       status: [ItemStatus.NaoAvaliada]
     }));
+    this.updateDataSource();
+    this.form.markAsDirty();
+  }
+
+  private updateDataSource() {
+    this.dataSource = [...this.items.controls] as FormGroup[];
   }
 
   public removeItem(index: number) {
     this.items.removeAt(index);
+    this.updateDataSource();
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {
     if (this.checklist?.status !== 0) return;
     
     moveItemInArray(this.items.controls, event.previousIndex, event.currentIndex);
-    this.items.updateValueAndValidity();
+    this.updateDataSource();
     this.form.markAsDirty();
-    this.saveItems();
   }
 
   public onStatusChange(itemId: string, status: ItemStatus) {
@@ -343,6 +350,8 @@ export class ChecklistEditComponent implements OnInit {
         } else {
           this.form.enable();
         }
+        
+        this.updateDataSource();
         this.isLoading = false;
       },
       error: (error) => {

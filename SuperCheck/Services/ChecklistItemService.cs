@@ -58,7 +58,7 @@ public class ChecklistItemService: IChecklistItemService
             .Where(newItem => existingItems.Any(existingItem => existingItem.Id == newItem.Id))
             .Select(newItem => new ChecklistItem
             {
-                Id = newItem.Id,
+                Id = newItem.Id.GetValueOrDefault(),
                 ChecklistId = checklistId,
                 Nome = newItem.Nome,
                 Observacao = newItem.Observacao,
