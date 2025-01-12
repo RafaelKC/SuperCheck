@@ -1,67 +1,69 @@
-# SuperCheck - Sistema de Checklist para Caminhões
+[English](README.md) | [Português](README_PT.md)
 
-## Sobre o Sistema
+# SuperCheck - Truck Checklist System
 
-O SuperCheck é uma aplicação web desenvolvida para gerenciar checklists de caminhões. O sistema permite criar e gerenciar verificações de segurança e manutenção de veículos, com funcionalidades específicas para motoristas e administradores.
+## About the System
 
-Principais funcionalidades:
-- Gerenciamento de usuários (motoristas, executores e administradores)
-- Cadastro e gerenciamento de caminhões
-- Criação e gerenciamento de templates de checklist
-- Execução e acompanhamento de checklists
-- Categorização de itens de verificação
-- Sistema de autenticação e autorização
+SuperCheck is a web application developed to manage truck checklists. The system allows you to create and manage vehicle safety and maintenance checks, with specific functionalities for drivers and administrators.
 
-## Configuração do Ambiente
+Main features:
+- User management (drivers, executors, and administrators)
+- Truck registration and management
+- Checklist template creation and management
+- Checklist execution and monitoring
+- Verification item categorization
+- Authentication and authorization system
 
-### 1. Banco de Dados (SQL Server)
+## Environment Setup
 
-1. Instale o Microsoft SQL Server (Express ou Developer Edition)
-2. Crie um novo banco de dados chamado "SuperCheck"
-3. Configure a string de conexão no arquivo `SuperCheck/appsettings.json`:
+### 1. Database (SQL Server)
+
+1. Install Microsoft SQL Server (Express or Developer Edition)
+2. Create a new database called "SuperCheck"
+3. Configure the connection string in the `SuperCheck/appsettings.json` file:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=seu_servidor;Database=SuperCheck;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=your_server;Database=SuperCheck;Trusted_Connection=True;TrustServerCertificate=True;"
   }
 }
 ```
 
-Substitua "seu_servidor" pelo nome do seu servidor SQL Server (exemplo: "localhost" ou "localhost\\SQLEXPRESS")
+Replace "your_server" with your SQL Server name (example: "localhost" or "localhost\\SQLEXPRESS")
 
 ### 2. Backend (.NET)
 
-1. Navegue até a pasta do backend:
+1. Navigate to the backend folder:
 ```powershell
 cd SuperCheck
 ```
 
-2. Restaure os pacotes NuGet:
+2. Restore NuGet packages:
 ```powershell
 dotnet restore
 ```
 
-4. Execute o projeto:
+4. Run the project:
 ```powershell
 dotnet run
 ```
 
-O backend estará rodando em `http://localhost:5277`
+The backend will be running at `http://localhost:5277`
 
 ### 3. Frontend (Angular)
 
-1. Navegue até a pasta do frontend:
+1. Navigate to the frontend folder:
 ```powershell
 cd front/SuperCheck
 ```
 
-2. Instale as dependências:
+2. Install dependencies:
 ```powershell
 npm install
 ```
 
-3. Configure a URL do backend no arquivo `src/environments/environment.ts`:
+3. Configure the backend URL in the `src/environments/environment.ts` file:
 ```typescript
 export const environment = {
   production: false,
@@ -69,29 +71,29 @@ export const environment = {
 };
 ```
 
-4. Execute o projeto:
+4. Run the project:
 ```powershell
 npm start
 ```
 
-O frontend estará disponível em `http://localhost:4200`
+The frontend will be available at `http://localhost:4200`
 
-## Primeiro Acesso
+## First Access
 
-### Usuário Administrador Padrão
-O sistema já vem com um usuário administrador configurado:
+### Default Administrator User
+The system comes with a pre-configured administrator user:
 - Login: admin
-- Senha: 123qwe
+- Password: 123qwe
 
-### Configuração Inicial
+### Initial Setup
 
-1. Faça login com o usuário administrador
-2. Acesse o menu "Usuários" para criar um novo motorista
-3. Acesse o menu "Caminhões" para cadastrar os veículos
+1. Log in with the administrator user
+2. Access the "Users" menu to create a new driver
+3. Access the "Trucks" menu to register vehicles
 
-Após isso na tela inicial de chcklists você já vai conseguir criar um checklist (ainda sem template). Se quiser você pode criar um template e depois usar esse template para criar seus checklists mais rapidamente
+After this, on the checklists home screen, you'll be able to create a checklist (without a template yet). If you want, you can create a template and then use this template to create your checklists more quickly
 
-## Observações Importantes
+## Important Notes
 
-- O sistema utiliza autenticação via JWT Token
-- Como supervisor você vai conseguir criar e gerenciar todos os recursos da aplicação e executar o checklist. Crie usuário do tipo executor que vão conseguir apenas criar e executar checklists.
+- The system uses JWT Token authentication
+- As a supervisor, you'll be able to create and manage all application resources and execute checklists. Create executor-type users who will only be able to create and execute checklists.
