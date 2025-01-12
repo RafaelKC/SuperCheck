@@ -14,10 +14,11 @@ import { ChecklistService } from '../../../services/checklist.service';
 import { ChecklistTemplateService } from '../../../services/checklist-template.service';
 import { Observable, map } from 'rxjs';
 import { ChecklistTemplate, GetChecklistTemplateListInput } from '../../../interfaces/checklist-template.interface';
-import { CaminhaoService, Caminhao } from '../../../services/caminhao.service';
+import { CaminhaoService } from '../../../services/caminhao.service';
 import { UsuarioService } from '../../../services/usuario.service';
 import { GetUsuarioListInput, Usuario, UsuarioRole } from '../../../interfaces/usuario.interface';
 import {FilteredAndPagedGetListInput} from '../../../interfaces/filtered-and-paged-get-list-input';
+import { Caminhao } from '../../../interfaces/caminhao.interface';
 
 @Component({
   selector: 'app-checklist-form',

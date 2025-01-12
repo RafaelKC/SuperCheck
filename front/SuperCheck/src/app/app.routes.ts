@@ -48,6 +48,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'caminhoes',
+    loadComponent: () => import('./components/caminhao-management/caminhao-management.component').then(c => c.CaminhaoManagementComponent),
+    canActivate: [authGuard, supervisorGuard]
+  },
+  {
     path: '*',
     redirectTo: 'checklists'
   }

@@ -1,41 +1,42 @@
-import {HttpClient} from '@angular/common/http';
-import {inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {API_URL} from '../tokens/api.token';
-import {FilteredAndPagedGetListInput} from '../interfaces/filtered-and-paged-get-list-input';
-import {PagedResultDto} from '../interfaces/paged-result-dto';
-
-export interface Caminhao {
-  id: string;
-  placa: string;
-  descricao: string;
-}
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { API_URL } from '../tokens/api.token';
+import { FilteredAndPagedGetListInput } from '../interfaces/filtered-and-paged-get-list-input';
+import { PagedResultDto } from '../interfaces/paged-result-dto';
+import { Caminhao } from '../interfaces/caminhao.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CaminhaoService {
-  private http = inject(HttpClient);
-  private apiUrl = inject(API_URL);
-  private baseUrl = `${this.apiUrl}/caminhoes`;
+  private readonly baseUrl = `${inject(API_URL)}/caminhoes`;
 
-  public getList(input: FilteredAndPagedGetListInput): Observable<PagedResultDto<Caminhao>> {
-    return this.http.get<PagedResultDto<Caminhao>>(this.baseUrl, {params: {...input}});
+  constructor(private http: HttpClient) {}
+
+  getList(input: FilteredAndPagedGetListInput): Observable<PagedResultDto<Caminhao>> {
+    const params = {
+      filter: input.filter || '',
+      pageSize: input.pageSize.toString(),
+      skipCount: input.skipCount.toString()
+    };
+
+    return this.http.get<PagedResultDto<Caminhao>>(this.baseUrl, { params });
   }
 
-  public getById(id: string): Observable<Caminhao> {
+  getById(id: string): Observable<Caminhao> {
     return this.http.get<Caminhao>(`${this.baseUrl}/${id}`);
   }
 
-  public create(caminhao: Caminhao): Observable<Caminhao> {
+  create(caminhao: Caminhao): Observable<Caminhao> {
     return this.http.post<Caminhao>(this.baseUrl, caminhao);
   }
 
-  public update(id: string, caminhao: Caminhao): Observable<void> {
+  update(id: string, caminhao: Caminhao): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${id}`, caminhao);
   }
 
-  public delete(id: string): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

@@ -17,7 +17,7 @@ import {CdkDragDrop, DragDropModule, moveItemInArray} from '@angular/cdk/drag-dr
 import {CategoriaSelectorComponent} from '../../shared/categoria-selector/categoria-selector.component';
 import {ChecklistService} from '../../../services/checklist.service';
 import {ChecklistItemService} from '../../../services/checklist-item.service';
-import {Caminhao, CaminhaoService} from '../../../services/caminhao.service';
+import {CaminhaoService} from '../../../services/caminhao.service';
 import {AuthService} from '../../../services/auth.service';
 import {map, Observable} from 'rxjs';
 import {Checklist} from '../../../interfaces/checklist.interface';
@@ -30,6 +30,7 @@ import {GetUsuarioListInput, Usuario, UsuarioRole} from '../../../interfaces/usu
 import {UsuarioService} from '../../../services/usuario.service';
 import {FilteredAndPagedGetListInput} from '../../../interfaces/filtered-and-paged-get-list-input';
 import {ChecklistStatus} from '../../../interfaces/checklist-status.enum';
+import { Caminhao } from '../../../interfaces/caminhao.interface';
 
 @Component({
   selector: 'app-checklist-edit',

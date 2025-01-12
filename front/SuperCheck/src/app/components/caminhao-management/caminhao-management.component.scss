@@ -1,0 +1,40 @@
+.container {
+  padding: 20px;
+  position: relative;
+  min-height: 400px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  mat-form-field {
+    width: 40%;
+  }
+}
+
+.content {
+  table {
+    width: 100%;
+  }
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mat-column-acoes {
+  width: 120px;
+  text-align: center;
+}
