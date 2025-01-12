@@ -96,4 +96,4 @@ Após isso na tela inicial de chcklists você já vai conseguir criar um checkli
 ## Observações Importantes
 
 - O sistema utiliza autenticação via JWT Token
-- Como supervisor você vai conseguir criar e gerenciar todos os recursos da aplicação e executar o checklist. Crie usuário do tipo executor que vão conseguir apenas criar e executar checklists.
+- Como supervisor você vai conseguir criar e gerenciar todos os recursos da aplicação e executar o checklist. Crie usuário do tipo executor que vai conseguir apenas criar e executar checklists.
