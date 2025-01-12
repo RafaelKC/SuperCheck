@@ -87,7 +87,7 @@ O sistema já vem com um usuário administrador configurado:
 
 ### Configuração Inicial
 
-1. Faça login com o usuário administrador
+1. Faça login com o usuário supervisoes
 2. Acesse o menu "Usuários" para criar um novo motorista
 3. Acesse o menu "Caminhões" para cadastrar os veículos
 

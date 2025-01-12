@@ -131,6 +131,7 @@
               <mat-form-field>
                 <mat-select [formControl]="item.get('status')"
                             [disabled]="!isExecutor || checklist.status !== 1"
+                            [disableRipple]="!isExecutor || checklist.status !== 1"
                             (selectionChange)="onStatusChange(item.get('id')?.value, $event.value)">
                   <mat-option *ngFor="let status of itemStatuses" [value]="status">
                     {{ getStatusDescricao(status) }}

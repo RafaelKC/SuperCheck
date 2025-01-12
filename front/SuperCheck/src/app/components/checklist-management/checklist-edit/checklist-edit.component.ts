@@ -78,7 +78,7 @@ export class ChecklistEditComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.form = this.fb.group({
-      categoriaId: [null, [Validators.required]],
+      categoriaId: [null],
       caminhaoId: [null, [Validators.required]],
       motoristaId: [null, [Validators.required]],
       data: [new Date(), [Validators.required]],
@@ -334,23 +334,25 @@ export class ChecklistEditComponent implements OnInit {
             id: [item.id],
             nome: [item.nome, Validators.required],
             observacao: [item.observacao],
-            status: [{value: item.status, disabled: checklist.status != ChecklistStatus.EmProgresso}]
+            status: [item.status]
           }));
         });
 
 
         if (
-          this.checklist.status === ChecklistStatus.Aprovada
-          || this.checklist.status === ChecklistStatus.NaoAprovada
-          || this.checklist.status === ChecklistStatus.Cancelada
-          || this.checklist.status === ChecklistStatus.Completa
-          || (this.checklist.status === ChecklistStatus.EmProgresso && !this.isExecutor)
+          this.checklist.status !== ChecklistStatus.Aberta
         ) {
           this.form.disable();
         } else {
           this.form.enable();
         }
         
+        if(this.checklist.status !== ChecklistStatus.EmProgresso || !this.isExecutor) {
+          this.items.controls.forEach(c => c.get('status')?.disable())
+        } else {
+          this.items.controls.forEach(c => c.get('status')?.enable())
+        }
+
         this.updateDataSource();
         this.isLoading = false;
       },

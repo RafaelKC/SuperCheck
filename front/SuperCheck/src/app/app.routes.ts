@@ -4,11 +4,39 @@ import { supervisorGuard } from './guards/supervisor.guard';
 
 export const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'checklists',
+    pathMatch: 'full'
+  },
+  {
     path: 'login',
     loadComponent: () => import('./components/login/login.component').then(c => c.LoginComponent)
   },
   {
     path: 'usuarios',
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./components/user-management/user-management.component').then(c => c.UserManagementComponent),
+        canActivate: [authGuard, supervisorGuard]
+      },
+      {
+        path: 'create',
+        loadComponent: () => import('./components/user-management/create-user/create-user.component').then(c => c.CreateUserComponent),
+        canActivate: [authGuard, supervisorGuard]
+      },
+      {
+        path: 'create-motorista',
+        loadComponent: () => import('./components/user-management/create-user/create-user.component').then(c => c.CreateUserComponent),
+        canActivate: [authGuard, supervisorGuard],
+        data: {
+          type: 'motorista'
+        }
+      }
+    ]
+  },
+  {
+    path: 'usuarios/create',
     loadComponent: () => import('./components/user-management/user-management.component').then(c => c.UserManagementComponent),
     canActivate: [authGuard, supervisorGuard]
   },
